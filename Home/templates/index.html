@@ -40,7 +40,11 @@
 						{% if vendor.username == request.user %}
 						<li><a class="nav-link" href="/Vendor/productupload"> Post product </a></li>
 						{%endif %}
+						{% if request.user.is_active and request.user.is_authenticated%}
 						<li><a class="nav-link" href="/logout/"><i class="fa fa-sign-out" aria-hidden ="true"></i> logout </a></li>
+						{%else%}
+						<li><a class="nav-link" href="/started/"><i class="fa fa-sign-out" aria-hidden ="true"></i> Get Started </a></li>
+						{%endif%}
 						<li><a class="nav-link" href="contact.html">Contact us</a></li>
 					</ul>
 

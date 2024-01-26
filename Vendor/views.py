@@ -45,10 +45,11 @@ class ProfileView(SessionWizardView):
         
             profile.username =  userr
             profile.save()
+            Wallet.objects.create(vendor=userr)
         
         
 
-            messages.info(self.request, " account created successfully ")
+            messages.info(self.request, " account and wallet created successfully ")
             return redirect('/login')
         
         else:

@@ -84,7 +84,10 @@ def login(request):
         form = AuthenticationForm()
         return render(request, 'login.html', {'form':form})
     
+# def logout(request):
+#     auth.logout(request)
+#     messages.info(request, 'Come back soon')
+#     return redirect('/login/')
 def logout(request):
-    auth.logout(request)
-    messages.info(request, 'Come back soon')
+    request.session.clear()
     return redirect('/login/')
