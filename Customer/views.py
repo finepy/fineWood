@@ -95,7 +95,7 @@ def shop(request):
 def cart_add(request, id):
     cart = Cart(request)
     product = Product.objects.get(id=id)
-    kent = product.name
+    
     cart.add(product=product)
     messages.success(request, f"{product.name} added successfully ")
     print(cart)
@@ -107,7 +107,7 @@ def item_clear(request, id):
     cart = Cart(request)
     product = Product.objects.get(id=id)
     cart.remove(product)
-    return redirect("/cart-detail")
+    return redirect("/Customer/cart-detail/")
 
 
 # @login_required(login_url="/users/login")
@@ -115,7 +115,7 @@ def item_increment(request, id):
     cart = Cart(request)
     product = Product.objects.get(id=id)
     cart.add(product=product)
-    return redirect("/Customer/cart-detail")
+    return redirect("/Customer/cart-detail/")
 
 
 # @login_required(login_url="/users/login")
@@ -124,10 +124,10 @@ def item_decrement(request, id):
         cart = Cart(request)
         product = Product.objects.get(id=id)
         cart.decrement(product=product)
-        return redirect("/Customer/cart-detail")
+        return redirect("/Customer/cart-detail/")
     except:
         messages.error(request,"not possible agba hacker")
-        return redirect("/Customer/cart-detail")
+        return redirect("/Customer/cart-detail/")
 
 
 # @login_required(login_url="/users/login")
@@ -137,7 +137,15 @@ def cart_clear(request):
     return redirect("/Customer/cart-detail")
 
 def cart_detail(request):
-    return render(request, 'Customer/cart.html')
+    sum = 0.0
+    cart = Cart(request)
+    for key,value in request.session.get('cart').items():
+        # print("this is price",value['price'])
+        c = float(value['price'])*float(value['quantity'])
+        print("this is combined ",c)
+        sum+=c
+        print("this is total sum",sum)
+    return render(request, 'Customer/cart.html',{'sum':sum})
 
 
 
@@ -147,7 +155,7 @@ def delete(request, product_id):
     c.pop(product_id)
     request.session.modified = True
 
-    return redirect('cart-detail')
+    return redirect('/Customer/cart-detail/')
 
 # def logout(request):
 #     auth.logout(request)

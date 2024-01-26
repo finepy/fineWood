@@ -9,22 +9,30 @@ from ckeditor.fields import RichTextField
 from django_countries.fields import CountryField
 from phonenumber_field.modelfields import PhoneNumberField
 from colorfield.fields import ColorField
+from Home.filechecker import validate_file_size
+from django.core.validators import RegexValidator
+from django.core.validators import MinValueValidator
+
+
+class NonNumericValidator(RegexValidator):
+    regex = r'^[^0-9]*$'
+    message = 'Numeric characters are not allowed.'
 # Create your models here.
 
 class Vendor(models.Model):
    
    
     username = models.OneToOneField(User, on_delete=models.CASCADE)
-    profile_picture =  models.ImageField(upload_to='Vendor/profile/profilePic/')
-    cover=  models.ImageField(upload_to='Vendor/profile/coverPic/')
-    Business_name = models.CharField(max_length=25)
+    profile_picture =  models.ImageField(upload_to='Vendor/profile/profilePic/',validators=[validate_file_size])
+    cover=  models.ImageField(upload_to='Vendor/profile/coverPic/',validators=[validate_file_size])
+    business_name = models.CharField(max_length=50)
 
     # friends = models.ManyToManyField(User, related_name='user_friends')
-    Business_description = models.CharField(max_length=1000)
+    business_description = models.CharField(max_length=255)
     phone = PhoneNumberField()
     # follower = models.ManyToManyField(User, related_name='vendor_followers', blank=True)
     country = CountryField()
-    friends = models.ManyToManyField(User, related_name='user_friends')
+    # friends = models.ManyToManyField(User, related_name='user_friends')
     # last_activity = models.DateTimeField(null=True, blank=True)
     # friend_requests = models.ManyToManyField(User,  related_name='received_friend_requests')
     # state = models.ForeignKey(Location,on_delete=models.CASCADE)
@@ -38,24 +46,23 @@ class Category(models.Model):
     slug = AutoSlugField(populate_from = 'name', unique=True)
     def __str__(self):
         return str(self.name)
-    def get_absolut_url(self):
-        return reverse('Myapp:category_filter', args={self.slug})
+    # def get_absolut_url(self):
+    #     return reverse('Myapp:category_filter', args={self.slug})
     
 class Product(models.Model):
     vendor =  models.ForeignKey(Vendor, on_delete=models.CASCADE)
     name = models.CharField(max_length=25) 
-    image = models.ImageField(upload_to='vendor/products/') 
+    image = models.ImageField(upload_to='vendor/products/',validators=[validate_file_size]) 
     description = models.CharField(max_length=255)
     # color = ColorField(default = "#FF0000", format="hexa")
     color = models.CharField(max_length = 25)
     slug = AutoSlugField(populate_from = 'name', unique=True)
-    price = models.FloatField()
+    price = models.FloatField(validators=[MinValueValidator(1.0, message="Price must be greater than or equal to 0.0")])
     category = models.ForeignKey(Category,on_delete=models.CASCADE)
     def __str__(self):
-        return str(self.name)
+        return f" {self.vendor.usernam} {self.name}"
     
-    def get_absolut_url(self):
-        return reverse('Myapp:product_detail', args={self.slug, })
+  
     
 
 
