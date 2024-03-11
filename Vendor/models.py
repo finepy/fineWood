@@ -19,57 +19,69 @@ class NonNumericValidator(RegexValidator):
     message = 'Numeric characters are not allowed.'
 # Create your models here.
 
+
 class Vendor(models.Model):
-   
-   
+
     username = models.OneToOneField(User, on_delete=models.CASCADE)
-    profile_picture =  models.ImageField(upload_to='Vendor/profile/profilePic/',validators=[validate_file_size])
-    cover=  models.ImageField(upload_to='Vendor/profile/coverPic/',validators=[validate_file_size])
+    profile_picture = models.ImageField(
+        upload_to='Vendor/profile/profilePic/', validators=[validate_file_size]
+    )
+    cover = models.ImageField(
+        upload_to='Vendor/profile/coverPic/', validators=[validate_file_size]
+    )
     business_name = models.CharField(max_length=50)
 
     # friends = models.ManyToManyField(User, related_name='user_friends')
     business_description = models.CharField(max_length=255)
     phone = PhoneNumberField()
-    # follower = models.ManyToManyField(User, related_name='vendor_followers', blank=True)
+    # follower = models.ManyToManyField(
+    # User, related_name='vendor_followers', blank=True)
     country = CountryField()
     # friends = models.ManyToManyField(User, related_name='user_friends')
     # last_activity = models.DateTimeField(null=True, blank=True)
-    # friend_requests = models.ManyToManyField(User,  related_name='received_friend_requests')
+    # friend_requests = models.ManyToManyField(
+    # User,  related_name='received_friend_requests')
     # state = models.ForeignKey(Location,on_delete=models.CASCADE)
-  
+
     def __str__(self) -> str:
         return f'{self.username}'
 
 class Category(models.Model):
 
     name = models.CharField(max_length = 25)
-    slug = AutoSlugField(populate_from = 'name', unique=True)
+    slug = AutoSlugField(populate_from='name', unique=True)
+    
     def __str__(self):
         return str(self.name)
     # def get_absolut_url(self):
     #     return reverse('Myapp:category_filter', args={self.slug})
-    
+
+
 class Product(models.Model):
-    vendor =  models.ForeignKey(Vendor, on_delete=models.CASCADE)
-    name = models.CharField(max_length=25) 
-    image = models.ImageField(upload_to='vendor/products/',validators=[validate_file_size]) 
+    vendor = models.ForeignKey(Vendor, on_delete=models.CASCADE)
+    name = models.CharField(max_length=25)
+    image = models.ImageField(
+        upload_to='vendor/products/', validators=[validate_file_size]
+    )
     description = models.CharField(max_length=255)
     # color = ColorField(default = "#FF0000", format="hexa")
-    color = models.CharField(max_length = 25)
-    slug = AutoSlugField(populate_from = 'name', unique=True)
-    price = models.FloatField(validators=[MinValueValidator(1.0, message="Price must be greater than or equal to 0.0")])
-    category = models.ForeignKey(Category,on_delete=models.CASCADE)
+    color = models.CharField(max_length=25)
+    slug = AutoSlugField(populate_from='name', unique=True)
+    price = models.FloatField(
+        validators=[MinValueValidator(
+            1.0, message="Price must be greater than or equal to 0.0"
+        )]
+    )
+    category = models.ForeignKey(Category, on_delete=models.CASCADE)
+
     def __str__(self):
         return f" {self.vendor.usernam} {self.name}"
-    
-  
-    
 
 
 class Feedback(models.Model):
-    username = models.ForeignKey(User,on_delete=models.CASCADE )
-    product = models.ForeignKey(Product,on_delete=models.CASCADE)
-    feedback  = models.TextField(max_length=500)
+    username = models.ForeignKey(User, on_delete=models.CASCADE)
+    product = models.ForeignKey(Product, on_delete=models.CASCADE)
+    feedback = models.TextField(max_length=500)
     date = models.DateField(auto_now=True)
     rating = models.PositiveSmallIntegerField(choices=(
         (1, "⭐☆☆☆☆"),
@@ -78,6 +90,7 @@ class Feedback(models.Model):
         (4, "⭐⭐⭐⭐☆"),
         (5, "⭐⭐⭐⭐⭐"),
     ))
+
 
 class Wallet(models.Model):
     vendor = models.ForeignKey(User, on_delete=models.CASCADE)

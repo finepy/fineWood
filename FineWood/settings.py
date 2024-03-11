@@ -39,14 +39,18 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'Home',
     'crispy_forms',
-    'crispy_bootstrap5',
+    'crispy_bootstrap4',
     'Vendor',
     'Customer',
     'colorfield',
     'cart'
+    'allauth',
+    'allauth.account',
+    'allauth.socialaccount',
 
 ]
 CRISPY_TEMPLATE_PACK = 'bootstrap5'
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
